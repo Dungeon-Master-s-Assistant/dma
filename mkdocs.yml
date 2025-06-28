@@ -1,7 +1,16 @@
 site_name: Dungeon Master’s Assistant
+site_url: https://dungeon-master-s-assistant.github.io/dma/
 repo_url: https://github.com/Dungeon-Master-s-Assistant/dma
 
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - search.highlight
+
 nav:
+  - Home: index.md
   - Overview:
       - DMA Plan v2: dma-plan-v2.md
   - Architecture:
