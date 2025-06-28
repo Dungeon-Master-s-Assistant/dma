@@ -1,2 +1,1 @@
-# dma
-Dungeon Master's Assistant - Minimum Viable Campaign (Q3 2025)
+# Dungeon Master's Assistant (DMA) – MVC Edition
