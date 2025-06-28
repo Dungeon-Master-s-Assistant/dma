@@ -1,3 +1,2 @@
 pytest
 flake8
-ajv-cli  # JSON-Schema validator (Node binary, but fine for CI)
