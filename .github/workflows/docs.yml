@@ -1,0 +1,28 @@
+name: docs
+
+on:
+  push:
+    branches: [ main ]
+    # rebuild when docs or config change
+    paths: [ "mkdocs.yml", "docs/**" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install MkDocs & plug-ins
+        run: |
+          pip install mkdocs-material mkdocs-mermaid2-plugin
+
+      - name: Build & deploy to GitHub Pages
+        env:
+          # required by mkdocs gh-deploy
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: mkdocs gh-deploy --force
