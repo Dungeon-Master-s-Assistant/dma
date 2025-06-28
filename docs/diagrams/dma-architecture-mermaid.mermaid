@@ -1,0 +1,78 @@
+graph TB
+    %% DMA MVC Architecture - Q3 2025
+    %% This diagram lives in the repo and is auto-generated in CI
+    
+    subgraph "Local Deployment Zone"
+        subgraph "User Interface Layer"
+            UI[DM Interface<br/>React Web App]
+            DASH[Session Dashboard<br/>Real-time Status]
+        end
+        
+        subgraph "Orchestrator Layer"
+            AUTH{{"🔐 Auth Gateway<br/>JWT"}}
+            PP[Prompt Processor<br/>Local Intent Classifier]
+            FL[["⚡ Fast Lane RPC<br/>&lt;100ms Operations"]]
+            TR[Task Router<br/>Agent Selection]
+            BUS[Redis Streams Bus<br/>Persistent • Ordered • DLQ]
+        end
+        
+        subgraph "Core Agents - 3 Only"
+            SCRIBE[Scribe Agent<br/>CRUD • Validation • Search]
+            SMA[System Mastery<br/>AD&D 2e Rules • Combat]
+            WED[World Designer<br/>Locations • NPCs • Encounters]
+        end
+        
+        subgraph "Data Storage"
+            PG[(PostgreSQL 15<br/>JSONB • pgvector • FTS)]
+            CACHE[["⚡ In-Memory Cache<br/>Hot Rules"]]
+        end
+    end
+    
+    subgraph "External Services"
+        LLM[LLM API<br/>GPT-4 / Claude]
+    end
+    
+    %% Control Flow Connections
+    UI -->|HTTPS/JWT| AUTH
+    DASH -->|HTTPS/JWT| AUTH
+    AUTH -->|Authenticated| PP
+    AUTH -->|Authenticated| FL
+    
+    %% Fast Lane Path (Red, Bold)
+    FL -.->|"⚡ &lt;100ms"| CACHE
+    FL -.->|"⚡ Direct"| SMA
+    
+    %% Standard Flow
+    PP -->|Intent| TR
+    TR -->|Route| BUS
+    
+    %% Message Bus to Agents (Bidirectional)
+    BUS <-->|"Task/Response"| SCRIBE
+    BUS <-->|"Task/Response"| SMA
+    BUS <-->|"Task/Response"| WED
+    
+    %% Data Access (Bidirectional)
+    SCRIBE <-->|"CRUD"| PG
+    SMA <-->|"Rules"| PG
+    WED <-->|"Content"| PG
+    SMA <-->|"Cache"| CACHE
+    
+    %% External API
+    WED -.->|"Generate"| LLM
+    
+    %% Styling
+    classDef ui fill:#f8f5ff,stroke:#6f42c1,stroke-width:2px
+    classDef orch fill:#fff5f8,stroke:#e83e8c,stroke-width:2px
+    classDef agent fill:#f0fafc,stroke:#17a2b8,stroke-width:2px
+    classDef data fill:#f0f8f0,stroke:#28a745,stroke-width:2px
+    classDef external fill:#fff8f0,stroke:#fd7e14,stroke-width:2px
+    classDef fastlane fill:#fff5f5,stroke:#dc3545,stroke-width:3px
+    classDef auth fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    
+    class UI,DASH ui
+    class PP,TR,BUS orch
+    class FL fastlane
+    class AUTH auth
+    class SCRIBE,SMA,WED agent
+    class PG,CACHE data
+    class LLM external
