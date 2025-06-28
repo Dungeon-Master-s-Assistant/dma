@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://dungeon-master-s-assistant.github.io/dma/</loc>
+         <lastmod>2025-06-28</lastmod>
+    </url>
+    <url>
+         <loc>https://dungeon-master-s-assistant.github.io/dma/ckb-data-schema-v2/</loc>
+         <lastmod>2025-06-28</lastmod>
+    </url>
+    <url>
+         <loc>https://dungeon-master-s-assistant.github.io/dma/dma-agent-contract-tests-v2/</loc>
+         <lastmod>2025-06-28</lastmod>
+    </url>
+    <url>
+         <loc>https://dungeon-master-s-assistant.github.io/dma/dma-api-design-spec-v2/</loc>
+         <lastmod>2025-06-28</lastmod>
+    </url>
+    <url>
+         <loc>https://dungeon-master-s-assistant.github.io/dma/dma-plan-v2/</loc>
+         <lastmod>2025-06-28</lastmod>
+    </url>
+    <url>
+         <loc>https://dungeon-master-s-assistant.github.io/dma/dma-technical-design-v2/</loc>
+         <lastmod>2025-06-28</lastmod>
+    </url>
+    <url>
+         <loc>https://dungeon-master-s-assistant.github.io/dma/orchestrator-internal-design-v1/</loc>
+         <lastmod>2025-06-28</lastmod>
+    </url>
+</urlset>

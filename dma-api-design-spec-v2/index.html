@@ -1,0 +1,2849 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://dungeon-master-s-assistant.github.io/dma/dma-api-design-spec-v2/">
+      
+      
+        <link rel="prev" href="../orchestrator-internal-design-v1/">
+      
+      
+        <link rel="next" href="../dma-agent-contract-tests-v2/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+    
+    
+      
+        <title>API Design Spec v2 - Dungeon Master’s Assistant</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.342714a4.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#dma-api-design-specification-v20-mvc-edition" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Dungeon Master’s Assistant" class="md-header__button md-logo" aria-label="Dungeon Master’s Assistant" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Dungeon Master’s Assistant
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              API Design Spec v2
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Dungeon-Master-s-Assistant/dma" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../dma-plan-v2/" class="md-tabs__link">
+          
+  
+  
+  Overview
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../dma-technical-design-v2/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+  API
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ckb-data-schema-v2/" class="md-tabs__link">
+          
+  
+  
+  Data
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../diagrams/dma-architecture.md" class="md-tabs__link">
+          
+  
+  
+  Diagrams
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Dungeon Master’s Assistant" class="md-nav__button md-logo" aria-label="Dungeon Master’s Assistant" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Dungeon Master’s Assistant
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Dungeon-Master-s-Assistant/dma" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Overview
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dma-plan-v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    DMA Plan v2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Architecture
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Architecture
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dma-technical-design-v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Technical Design v2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../orchestrator-internal-design-v1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Orchestrator Internal Design v1
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    API
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            API
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    API Design Spec v2
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    API Design Spec v2
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#streamlined-api-architecture-for-q3-2025-launch" class="md-nav__link">
+    <span class="md-ellipsis">
+      Streamlined API Architecture for Q3 2025 Launch
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      Table of Contents
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#architecture-diagram" class="md-nav__link">
+    <span class="md-ellipsis">
+      Architecture Diagram
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#public-rest-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      Public REST API
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Public REST API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#base-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Base Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#core-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      Core Endpoints
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Core Endpoints">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-prompt-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Prompt Processing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-result-polling" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Result Polling
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-entity-crud" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Entity CRUD
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Search
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#standard-headers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Standard Headers
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fast-lane-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fast Lane API
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fast Lane API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#design-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      Design Principles
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      Endpoints
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Endpoints">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-thac0-calculation" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. THAC0 Calculation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-saving-throws" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Saving Throws
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-armor-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Armor Class
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cache-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cache Strategy
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#internal-message-bus" class="md-nav__link">
+    <span class="md-ellipsis">
+      Internal Message Bus
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Internal Message Bus">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#technology-choice-redis-streams" class="md-nav__link">
+    <span class="md-ellipsis">
+      Technology Choice: Redis Streams
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stream-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stream Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#message-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      Message Schema
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example Messages
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dead-letter-queue" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dead Letter Queue
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authentication-security" class="md-nav__link">
+    <span class="md-ellipsis">
+      Authentication &amp; Security
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Authentication &amp; Security">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#token-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Token Strategy
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#local-development" class="md-nav__link">
+    <span class="md-ellipsis">
+      Local Development
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Error Handling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#error-response-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Response Format
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#http-status-codes" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP Status Codes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-categories" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Categories
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#observability" class="md-nav__link">
+    <span class="md-ellipsis">
+      Observability
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Observability">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#required-labels" class="md-nav__link">
+    <span class="md-ellipsis">
+      Required Labels
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Metrics
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trace-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Trace Examples
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logging-standards" class="md-nav__link">
+    <span class="md-ellipsis">
+      Logging Standards
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-contracts" class="md-nav__link">
+    <span class="md-ellipsis">
+      API Contracts
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="API Contracts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#json-schema-repository" class="md-nav__link">
+    <span class="md-ellipsis">
+      JSON Schema Repository
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example Schema
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#contract-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Contract Testing
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation Checklist
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation Checklist">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#week-1-foundation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Week 1: Foundation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#week-2-core-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      Week 2: Core APIs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#week-3-fast-lane" class="md-nav__link">
+    <span class="md-ellipsis">
+      Week 3: Fast Lane
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#week-4-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Week 4: Integration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#week-5-hardening" class="md-nav__link">
+    <span class="md-ellipsis">
+      Week 5: Hardening
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-improvements-from-v1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Improvements from v1
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dma-agent-contract-tests-v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Agent Contract Tests v2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Data
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Data
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ckb-data-schema-v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    CKB Data Schema v2
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Diagrams
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Diagrams
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../diagrams/dma-architecture.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    System Diagram
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#streamlined-api-architecture-for-q3-2025-launch" class="md-nav__link">
+    <span class="md-ellipsis">
+      Streamlined API Architecture for Q3 2025 Launch
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      Table of Contents
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#architecture-diagram" class="md-nav__link">
+    <span class="md-ellipsis">
+      Architecture Diagram
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#public-rest-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      Public REST API
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Public REST API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#base-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Base Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#core-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      Core Endpoints
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Core Endpoints">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-prompt-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Prompt Processing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-result-polling" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Result Polling
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-entity-crud" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Entity CRUD
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Search
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#standard-headers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Standard Headers
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fast-lane-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fast Lane API
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fast Lane API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#design-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      Design Principles
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      Endpoints
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Endpoints">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-thac0-calculation" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. THAC0 Calculation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-saving-throws" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Saving Throws
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-armor-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Armor Class
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cache-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cache Strategy
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#internal-message-bus" class="md-nav__link">
+    <span class="md-ellipsis">
+      Internal Message Bus
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Internal Message Bus">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#technology-choice-redis-streams" class="md-nav__link">
+    <span class="md-ellipsis">
+      Technology Choice: Redis Streams
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stream-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stream Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#message-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      Message Schema
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example Messages
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dead-letter-queue" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dead Letter Queue
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authentication-security" class="md-nav__link">
+    <span class="md-ellipsis">
+      Authentication &amp; Security
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Authentication &amp; Security">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#token-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Token Strategy
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#local-development" class="md-nav__link">
+    <span class="md-ellipsis">
+      Local Development
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Error Handling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#error-response-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Response Format
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#http-status-codes" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP Status Codes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-categories" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Categories
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#observability" class="md-nav__link">
+    <span class="md-ellipsis">
+      Observability
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Observability">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#required-labels" class="md-nav__link">
+    <span class="md-ellipsis">
+      Required Labels
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Metrics
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trace-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Trace Examples
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logging-standards" class="md-nav__link">
+    <span class="md-ellipsis">
+      Logging Standards
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-contracts" class="md-nav__link">
+    <span class="md-ellipsis">
+      API Contracts
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="API Contracts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#json-schema-repository" class="md-nav__link">
+    <span class="md-ellipsis">
+      JSON Schema Repository
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example Schema
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#contract-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Contract Testing
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation Checklist
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation Checklist">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#week-1-foundation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Week 1: Foundation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#week-2-core-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      Week 2: Core APIs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#week-3-fast-lane" class="md-nav__link">
+    <span class="md-ellipsis">
+      Week 3: Fast Lane
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#week-4-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Week 4: Integration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#week-5-hardening" class="md-nav__link">
+    <span class="md-ellipsis">
+      Week 5: Hardening
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-improvements-from-v1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Improvements from v1
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="dma-api-design-specification-v20-mvc-edition"><strong>DMA API Design Specification v2.0 - MVC Edition</strong></h1>
+<h2 id="streamlined-api-architecture-for-q3-2025-launch"><strong>Streamlined API Architecture for Q3 2025 Launch</strong></h2>
+<p><strong>Version:</strong> 2.0 (MVC-Focused)<br />
+<strong>Date:</strong> June 28, 2025<br />
+<strong>Author:</strong> J.P. Dow</p>
+<hr />
+<h2 id="table-of-contents"><strong>Table of Contents</strong></h2>
+<ol>
+<li><a href="#overview">Overview</a>  </li>
+<li><a href="#public-rest-api">Public REST API</a>  </li>
+<li><a href="#fast-lane-api">Fast Lane API</a>  </li>
+<li><a href="#internal-message-bus">Internal Message Bus</a>  </li>
+<li><a href="#authentication--security">Authentication &amp; Security</a>  </li>
+<li><a href="#error-handling">Error Handling</a>  </li>
+<li><a href="#observability">Observability</a>  </li>
+<li><a href="#api-contracts">API Contracts</a>  </li>
+<li><a href="#implementation-checklist">Implementation Checklist</a></li>
+</ol>
+<hr />
+<h2 id="overview"><strong>Overview</strong></h2>
+<p>This specification defines the API architecture for the DMA Minimum Viable Campaign (MVC) release, focusing on:</p>
+<ul>
+<li><strong>3 agents only</strong>: Scribe, System Mastery, World Designer  </li>
+<li><strong>Single PostgreSQL database</strong>  </li>
+<li><strong>Redis Streams for messaging</strong>  </li>
+<li><strong>Fast Lane RPC for sub-500ms operations</strong></li>
+</ul>
+<h3 id="architecture-diagram"><strong>Architecture Diagram</strong></h3>
+<p>graph TB</p>
+<pre><code>UI\[DM Interface\] \--\&gt;|REST| ORC\[Orchestrator\]
+
+UI \--\&gt;|Fast Lane| FL\[Fast Lane Service\]
+
+
+
+ORC \--\&gt;|Redis Streams| RS\[Message Bus\]
+
+RS \--\&gt; SCA\[Scribe Agent\]
+
+RS \--\&gt; SMA\[System Mastery Agent\]
+
+RS \--\&gt; WED\[World Designer Agent\]
+
+
+
+SCA \--\&gt; PG\[(PostgreSQL)\]
+
+SMA \--\&gt; PG
+
+WED \--\&gt; PG
+
+FL \--\&gt; PG
+
+
+
+ORC \--\&gt; LLM\[OpenAI GPT-4\]
+</code></pre>
+<hr />
+<h2 id="public-rest-api"><strong>Public REST API</strong></h2>
+<h3 id="base-configuration"><strong>Base Configuration</strong></h3>
+<p>api:</p>
+<p>version: "v1"</p>
+<p>base_url: "http://localhost:8000/v1"</p>
+<p>timeout: 30s</p>
+<p>max_request_size: 10MB</p>
+<h3 id="core-endpoints"><strong>Core Endpoints</strong></h3>
+<h4 id="1-prompt-processing"><strong>1. Prompt Processing</strong></h4>
+<p>POST /v1/prompts</p>
+<p>Authorization: Bearer {token}</p>
+<p>Content-Type: application/json</p>
+<p>{</p>
+<p>"prompt": "Describe the ancient dwarven hall",</p>
+<p>"context": {</p>
+<pre><code>"campaign\_id": "uuid",
+
+"location\_id": "uuid",
+
+"session\_id": "uuid"
+</code></pre>
+<p>},</p>
+<p>"options": {</p>
+<pre><code>"timeout\_ms": 30000,
+
+"include\_stats": false
+</code></pre>
+<p>}</p>
+<p>}</p>
+<p>Response 202 Accepted:</p>
+<p>{</p>
+<p>"request_id": "req_123",</p>
+<p>"status": "processing",</p>
+<p>"poll_url": "/v1/prompts/req_123"</p>
+<p>}</p>
+<h4 id="2-result-polling"><strong>2. Result Polling</strong></h4>
+<p>GET /v1/prompts/{request_id}</p>
+<p>Authorization: Bearer {token}</p>
+<p>Response 200 OK:</p>
+<p>{</p>
+<p>"request_id": "req_123",</p>
+<p>"status": "completed",</p>
+<p>"result": {</p>
+<pre><code>"content": "The ancient dwarven hall...",
+
+"entities\_created": \["loc\_789", "npc\_456"\],
+
+"tokens\_used": 150
+</code></pre>
+<p>},</p>
+<p>"completed_at": "2025-06-28T10:30:00Z"</p>
+<p>}</p>
+<h4 id="3-entity-crud"><strong>3. Entity CRUD</strong></h4>
+<p># List entities</p>
+<p>GET /v1/entities/{type}?campaign_id={uuid}\&amp;limit=100\&amp;offset=0</p>
+<p># Get single entity</p>
+<p>GET /v1/entities/{type}/{id}</p>
+<p># Create entity</p>
+<p>POST /v1/entities/{type}</p>
+<p>{</p>
+<p>"name": "Broken Tower",</p>
+<p>"description": "A crumbling watchtower",</p>
+<p>"location_type": "building",</p>
+<p>"campaign_id": "uuid"</p>
+<p>}</p>
+<p># Update entity (with optimistic locking)</p>
+<p>PUT /v1/entities/{type}/{id}</p>
+<p>If-Match: {version}</p>
+<p>{</p>
+<p>"description": "Updated description"</p>
+<p>}</p>
+<p># Soft delete</p>
+<p>DELETE /v1/entities/{type}/{id}</p>
+<h4 id="4-search"><strong>4. Search</strong></h4>
+<p>POST /v1/search</p>
+<p>{</p>
+<p>"query": "ancient elven",</p>
+<p>"entity_types": ["location", "item"],</p>
+<p>"campaign_id": "uuid",</p>
+<p>"limit": 20</p>
+<p>}</p>
+<p>Response:</p>
+<p>{</p>
+<p>"results": [</p>
+<pre><code>{
+
+  "entity\_id": "loc\_123",
+
+  "entity\_type": "location",
+
+  "name": "Ancient Elven Temple",
+
+  "score": 0.95
+
+}
+</code></pre>
+<p>],</p>
+<p>"total": 3</p>
+<p>}</p>
+<h3 id="standard-headers"><strong>Standard Headers</strong></h3>
+<p># All responses include:</p>
+<p>X-Request-ID: req_123</p>
+<p>X-RateLimit-Remaining: 95</p>
+<p>X-RateLimit-Reset: 1719573600</p>
+<p>X-Response-Time: 234ms</p>
+<hr />
+<h2 id="fast-lane-api"><strong>Fast Lane API</strong></h2>
+<p>Direct RPC endpoints bypassing the message bus for latency-critical operations.</p>
+<h3 id="design-principles"><strong>Design Principles</strong></h3>
+<ul>
+<li><strong>No LLM calls</strong>  </li>
+<li><strong>No database writes</strong>  </li>
+<li><strong>In-memory caching</strong>  </li>
+<li><strong>Sub-500ms P95 latency</strong></li>
+</ul>
+<h3 id="endpoints"><strong>Endpoints</strong></h3>
+<h4 id="1-thac0-calculation"><strong>1. THAC0 Calculation</strong></h4>
+<p>GET /v1/fast/thac0?level=5\&amp;class=fighter\&amp;strength=18</p>
+<p>Response 200 OK (12ms):</p>
+<p>{</p>
+<p>"base_thac0": 16,</p>
+<p>"strength_bonus": 1,</p>
+<p>"final_thac0": 15,</p>
+<p>"cache_hit": true</p>
+<p>}</p>
+<h4 id="2-saving-throws"><strong>2. Saving Throws</strong></h4>
+<p>GET /v1/fast/saves?class=wizard\&amp;level=7</p>
+<p>Response 200 OK (8ms):</p>
+<p>{</p>
+<p>"paralyzation": 13,</p>
+<p>"rod_staff_wand": 9,</p>
+<p>"petrification": 11,</p>
+<p>"breath_weapon": 13,</p>
+<p>"spell": 10</p>
+<p>}</p>
+<h4 id="3-armor-class"><strong>3. Armor Class</strong></h4>
+<p>POST /v1/fast/ac</p>
+<p>{</p>
+<p>"base_ac": 10,</p>
+<p>"armor": "chain_mail",</p>
+<p>"shield": true,</p>
+<p>"dexterity": 16</p>
+<p>}</p>
+<p>Response 200 OK (15ms):</p>
+<p>{</p>
+<p>"armor_ac": 5,</p>
+<p>"shield_bonus": -1,</p>
+<p>"dex_bonus": -2,</p>
+<p>"final_ac": 2</p>
+<p>}</p>
+<h3 id="cache-strategy"><strong>Cache Strategy</strong></h3>
+<p># In-memory rule cache with startup preload</p>
+<p>RULE_CACHE \= {</p>
+<pre><code>'thac0': load\_thac0\_tables(),
+
+'saves': load\_saving\_throw\_tables(),
+
+'armor': load\_armor\_values()
+</code></pre>
+<p>}</p>
+<p>@app.on_event("startup")</p>
+<p>async def preload_cache():</p>
+<pre><code>"""Load all 2e rules into memory at startup"""
+
+await load\_rules\_from\_database()
+</code></pre>
+<hr />
+<h2 id="internal-message-bus"><strong>Internal Message Bus</strong></h2>
+<h3 id="technology-choice-redis-streams"><strong>Technology Choice: Redis Streams</strong></h3>
+<p>Chosen over Pub/Sub for:</p>
+<ul>
+<li><strong>Persistence</strong>: Messages survive crashes  </li>
+<li><strong>Consumer groups</strong>: Load balancing  </li>
+<li><strong>Dead letter queues</strong>: Failed message handling  </li>
+<li><strong>Message ordering</strong>: FIFO guarantees</li>
+</ul>
+<h3 id="stream-configuration"><strong>Stream Configuration</strong></h3>
+<p>streams:</p>
+<p>agent_tasks:</p>
+<pre><code>max\_length: 10000
+
+retention: "24h"
+
+consumer\_groups:
+
+  \- scribe\_workers
+
+  \- system\_mastery\_workers
+
+  \- world\_designer\_workers
+</code></pre>
+<p>agent_results:</p>
+<pre><code>max\_length: 5000
+
+retention: "24h"
+
+consumer\_groups:
+
+  \- orchestrator\_workers
+</code></pre>
+<h3 id="message-schema"><strong>Message Schema</strong></h3>
+<p>interface AgentMessage {</p>
+<p>// Required fields</p>
+<p>message_id: string;        // UUID</p>
+<p>timestamp: string;         // ISO 8601</p>
+<p>source: string;            // Agent name or "orchestrator"</p>
+<p>target: string;            // Agent name or "orchestrator"</p>
+<p>message_type: MessageType;</p>
+<p>correlation_id: string;    // Links request/response</p>
+<p>// Payload</p>
+<p>payload: Record\&lt;string, any&gt;;</p>
+<p>// Delivery guarantees</p>
+<p>max_retries: number;       // Default: 3</p>
+<p>timeout_ms: number;        // Default: 30000</p>
+<p>priority: 1 | 2 | 3;       // 1 \= highest</p>
+<p>}</p>
+<p>enum MessageType {</p>
+<p>// Task assignments</p>
+<p>TASK_CREATE_ENTITY \= "task.create_entity",</p>
+<p>TASK_UPDATE_ENTITY \= "task.update_entity",</p>
+<p>TASK_SEARCH_ENTITIES \= "task.search_entities",</p>
+<p>TASK_VALIDATE_RULE \= "task.validate_rule",</p>
+<p>TASK_GENERATE_CONTENT \= "task.generate_content",</p>
+<p>// Results</p>
+<p>RESULT_SUCCESS \= "result.success",</p>
+<p>RESULT_ERROR \= "result.error",</p>
+<p>RESULT_PARTIAL \= "result.partial",</p>
+<p>// System</p>
+<p>AGENT_READY \= "agent.ready",</p>
+<p>AGENT_BUSY \= "agent.busy",</p>
+<p>HEALTH_CHECK \= "system.health_check"</p>
+<p>}</p>
+<h3 id="example-messages"><strong>Example Messages</strong></h3>
+<p>// Task Assignment</p>
+<p>{</p>
+<p>"message_id": "msg_123",</p>
+<p>"timestamp": "2025-06-28T10:00:00Z",</p>
+<p>"source": "orchestrator",</p>
+<p>"target": "scribe",</p>
+<p>"message_type": "task.create_entity",</p>
+<p>"correlation_id": "req_456",</p>
+<p>"payload": {</p>
+<pre><code>"entity\_type": "location",
+
+"data": {
+
+  "name": "The Sunken Temple",
+
+  "description": "An ancient temple half-submerged...",
+
+  "location\_type": "dungeon"
+
+}
+</code></pre>
+<p>},</p>
+<p>"max_retries": 3,</p>
+<p>"timeout_ms": 5000,</p>
+<p>"priority": 2</p>
+<p>}</p>
+<p>// Task Result</p>
+<p>{</p>
+<p>"message_id": "msg_124",</p>
+<p>"timestamp": "2025-06-28T10:00:02Z",</p>
+<p>"source": "scribe",</p>
+<p>"target": "orchestrator",</p>
+<p>"message_type": "result.success",</p>
+<p>"correlation_id": "req_456",</p>
+<p>"payload": {</p>
+<pre><code>"entity\_id": "loc\_789",
+
+"version": 1,
+
+"created\_at": "2025-06-28T10:00:02Z"
+</code></pre>
+<p>}</p>
+<p>}</p>
+<h3 id="dead-letter-queue"><strong>Dead Letter Queue</strong></h3>
+<p># Automatic DLQ handling</p>
+<p>async def process_with_dlq(message: AgentMessage):</p>
+<pre><code>try:
+
+    result \= await process\_message(message)
+
+    await redis.xack(STREAM\_NAME, GROUP\_NAME, message.id)
+
+    return result
+
+except Exception as e:
+
+    message.retry\_count \+= 1
+
+
+
+    if message.retry\_count \&gt;= message.max\_retries:
+
+        \# Move to DLQ
+
+        await redis.xadd(
+
+            f"{STREAM\_NAME}:dlq",
+
+            {
+
+                \*\*message.dict(),
+
+                "error": str(e),
+
+                "failed\_at": datetime.utcnow().isoformat()
+
+            }
+
+        )
+
+    else:
+
+        \# Retry with backoff
+
+        delay \= 2 \*\* message.retry\_count
+
+        await redis.xadd(
+
+            f"{STREAM\_NAME}:retry",
+
+            message.dict(),
+
+            id=f"{int(time.time() \+ delay) \* 1000}-0"
+
+        )
+</code></pre>
+<hr />
+<h2 id="authentication-security"><strong>Authentication &amp; Security</strong></h2>
+<h3 id="token-strategy"><strong>Token Strategy</strong></h3>
+<p>auth:</p>
+<p># UI -&gt; Orchestrator: JWT tokens</p>
+<p>ui_auth:</p>
+<pre><code>type: "jwt"
+
+issuer: "dma-auth"
+
+expiry: "1h"
+
+refresh\_enabled: true
+</code></pre>
+<p># Internal services: Shared secret</p>
+<p>service_auth:</p>
+<pre><code>type: "bearer"
+
+token\_prefix: "svc\_"
+
+rotation\_interval: "24h"
+</code></pre>
+<h3 id="implementation"><strong>Implementation</strong></h3>
+<p>from fastapi import Security, HTTPException</p>
+<p>from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials</p>
+<p>security \= HTTPBearer()</p>
+<p>async def verify_token(credentials: HTTPAuthorizationCredentials \= Security(security)):</p>
+<pre><code>token \= credentials.credentials
+
+
+
+if token.startswith("svc\_"):
+
+    \# Service token validation
+
+    if not await validate\_service\_token(token):
+
+        raise HTTPException(401, "Invalid service token")
+
+else:
+
+    \# JWT validation
+
+    try:
+
+        payload \= jwt.decode(token, SECRET\_KEY, algorithms=\["HS256"\])
+
+        return payload
+
+    except jwt.ExpiredSignatureError:
+
+        raise HTTPException(401, "Token expired")
+
+    except jwt.InvalidTokenError:
+
+        raise HTTPException(401, "Invalid token")
+</code></pre>
+<p># Apply to all endpoints</p>
+<p>@app.post("/v1/prompts", dependencies=[Depends(verify_token)])</p>
+<p>async def process_prompt(request: PromptRequest):</p>
+<pre><code>...
+</code></pre>
+<h3 id="local-development"><strong>Local Development</strong></h3>
+<p># .env.local</p>
+<p>AUTH_ENABLED=true</p>
+<p>DEV_TOKEN=dev_local_token_123</p>
+<p>SECRET_KEY=local_development_key</p>
+<p># Docker compose</p>
+<p>environment:</p>
+<p>- AUTH_ENABLED=${AUTH_ENABLED:-true}</p>
+<p>- DEV_TOKEN=${DEV_TOKEN}</p>
+<hr />
+<h2 id="error-handling"><strong>Error Handling</strong></h2>
+<h3 id="error-response-format"><strong>Error Response Format</strong></h3>
+<p>Following RFC 7807 Problem Details:</p>
+<p>{</p>
+<p>"type": "https://api.dma.com/errors/validation",</p>
+<p>"title": "Validation Error",</p>
+<p>"status": 400,</p>
+<p>"detail": "The location_type 'castle' is not valid",</p>
+<p>"instance": "/v1/entities/location",</p>
+<p>"errors": [</p>
+<pre><code>{
+
+  "field": "location\_type",
+
+  "message": "Must be one of: continent, kingdom, city, town, dungeon, building, room, wilderness"
+
+}
+</code></pre>
+<p>]</p>
+<p>}</p>
+<h3 id="http-status-codes"><strong>HTTP Status Codes</strong></h3>
+<p># Proper status codes, not 200 for everything</p>
+<p>class ErrorResponses:</p>
+<pre><code>BAD\_REQUEST \= (400, "Invalid request format")
+
+UNAUTHORIZED \= (401, "Authentication required")
+
+FORBIDDEN \= (403, "Insufficient permissions")
+
+NOT\_FOUND \= (404, "Resource not found")
+
+CONFLICT \= (409, "Resource version conflict")
+
+UNPROCESSABLE \= (422, "Validation failed")
+
+TOO\_MANY\_REQUESTS \= (429, "Rate limit exceeded")
+
+INTERNAL\_ERROR \= (500, "Internal server error")
+
+BAD\_GATEWAY \= (502, "Upstream service error")
+
+SERVICE\_UNAVAILABLE \= (503, "Service temporarily unavailable")
+
+TIMEOUT \= (504, "Request timeout")
+</code></pre>
+<h3 id="error-categories"><strong>Error Categories</strong></h3>
+<p>from enum import Enum</p>
+<p>class ErrorCategory(Enum):</p>
+<pre><code>\# Transient \- can retry
+
+NETWORK\_ERROR \= "network\_error"
+
+TIMEOUT \= "timeout"
+
+RATE\_LIMIT \= "rate\_limit"
+
+SERVICE\_UNAVAILABLE \= "service\_unavailable"
+
+
+
+\# Persistent \- don't retry
+
+VALIDATION\_ERROR \= "validation\_error"
+
+AUTHENTICATION\_ERROR \= "auth\_error"
+
+PERMISSION\_ERROR \= "permission\_error"
+
+NOT\_FOUND \= "not\_found"
+
+
+
+\# AI-specific
+
+LLM\_ERROR \= "llm\_error"
+
+CONTENT\_FILTER \= "content\_filter"
+
+TOKEN\_LIMIT \= "token\_limit"
+</code></pre>
+<hr />
+<h2 id="observability"><strong>Observability</strong></h2>
+<h3 id="required-labels"><strong>Required Labels</strong></h3>
+<p>Every metric and trace must include:</p>
+<p>standard_labels:</p>
+<p>- service: "orchestrator|scribe|system_mastery|world_designer"</p>
+<p>- environment: "local|staging|production"</p>
+<p>- version: "2.0.0"</p>
+<p>- method: "endpoint or message_type"</p>
+<p>- status: "success|error"</p>
+<p>- error_type: "category if error"</p>
+<h3 id="key-metrics"><strong>Key Metrics</strong></h3>
+<p># Prometheus metrics</p>
+<p>from prometheus_client import Counter, Histogram, Gauge</p>
+<p># Request metrics</p>
+<p>request_duration \= Histogram(</p>
+<pre><code>'dma\_request\_duration\_seconds',
+
+'Request duration',
+
+\['service', 'method', 'status'\],
+
+buckets=\[0.1, 0.5, 1.0, 2.0, 5.0, 10.0\]
+</code></pre>
+<p>)</p>
+<p>request_counter \= Counter(</p>
+<pre><code>'dma\_requests\_total',
+
+'Total requests',
+
+\['service', 'method', 'status'\]
+</code></pre>
+<p>)</p>
+<p># Token usage</p>
+<p>tokens_used \= Counter(</p>
+<pre><code>'dma\_llm\_tokens\_total',
+
+'LLM tokens consumed',
+
+\['service', 'model', 'operation'\]
+</code></pre>
+<p>)</p>
+<p># Queue depth</p>
+<p>queue_depth \= Gauge(</p>
+<pre><code>'dma\_queue\_depth',
+
+'Current queue depth',
+
+\['stream', 'consumer\_group'\]
+</code></pre>
+<p>)</p>
+<h3 id="trace-examples"><strong>Trace Examples</strong></h3>
+<p>from opentelemetry import trace</p>
+<p>tracer \= trace.get_tracer(__name__)</p>
+<p>@app.post("/v1/prompts")</p>
+<p>async def process_prompt(request: PromptRequest):</p>
+<pre><code>with tracer.start\_as\_current\_span(
+
+    "prompt\_processing",
+
+    attributes={
+
+        "campaign\_id": request.context.campaign\_id,
+
+        "prompt\_length": len(request.prompt)
+
+    }
+
+) as span:
+
+    \# Intent classification
+
+    with tracer.start\_span("classify\_intent"):
+
+        intent \= await classifier.classify(request.prompt)
+
+        span.set\_attribute("intent", intent.type)
+
+
+
+    \# Task decomposition
+
+    with tracer.start\_span("decompose\_tasks"):
+
+        tasks \= await decompose\_into\_tasks(request, intent)
+
+        span.set\_attribute("task\_count", len(tasks))
+
+
+
+    \# Dispatch to agents
+
+    with tracer.start\_span("dispatch\_tasks"):
+
+        results \= await dispatch\_to\_agents(tasks)
+
+
+
+    return results
+</code></pre>
+<h3 id="logging-standards"><strong>Logging Standards</strong></h3>
+<p>import structlog</p>
+<p>logger \= structlog.get_logger()</p>
+<p># Structured logging with context</p>
+<p>logger.info(</p>
+<pre><code>"task\_completed",
+
+task\_id="task\_123",
+
+agent="scribe",
+
+duration\_ms=234,
+
+entity\_type="location",
+
+entity\_id="loc\_789"
+</code></pre>
+<p>)</p>
+<p># Error logging with full context</p>
+<p>logger.error(</p>
+<pre><code>"task\_failed",
+
+task\_id="task\_124",
+
+agent="world\_designer",
+
+error\_type="llm\_timeout",
+
+error\_message=str(e),
+
+correlation\_id="req\_456",
+
+retry\_count=2
+</code></pre>
+<p>)</p>
+<hr />
+<h2 id="api-contracts"><strong>API Contracts</strong></h2>
+<h3 id="json-schema-repository"><strong>JSON Schema Repository</strong></h3>
+<p>contracts/</p>
+<p>├── v1/</p>
+<p>│   ├── requests/</p>
+<p>│   │   ├── prompt_request.json</p>
+<p>│   │   ├── entity_create.json</p>
+<p>│   │   └── search_request.json</p>
+<p>│   ├── responses/</p>
+<p>│   │   ├── prompt_response.json</p>
+<p>│   │   ├── entity.json</p>
+<p>│   │   └── error.json</p>
+<p>│   └── messages/</p>
+<p>│       ├── agent_task.json</p>
+<p>│       └── agent_result.json</p>
+<p>└── README.md</p>
+<h3 id="example-schema"><strong>Example Schema</strong></h3>
+<p>{</p>
+<p>"$schema": "http://json-schema.org/draft-07/schema#",</p>
+<p>"$id": "https://api.dma.com/schemas/v1/prompt_request.json",</p>
+<p>"title": "PromptRequest",</p>
+<p>"type": "object",</p>
+<p>"required": ["prompt", "context"],</p>
+<p>"properties": {</p>
+<pre><code>"prompt": {
+
+  "type": "string",
+
+  "minLength": 1,
+
+  "maxLength": 5000
+
+},
+
+"context": {
+
+  "type": "object",
+
+  "required": \["campaign\_id"\],
+
+  "properties": {
+
+    "campaign\_id": {
+
+      "type": "string",
+
+      "format": "uuid"
+
+    },
+
+    "location\_id": {
+
+      "type": "string",
+
+      "format": "uuid"
+
+    },
+
+    "session\_id": {
+
+      "type": "string",
+
+      "format": "uuid"
+
+    }
+
+  }
+
+},
+
+"options": {
+
+  "type": "object",
+
+  "properties": {
+
+    "timeout\_ms": {
+
+      "type": "integer",
+
+      "minimum": 1000,
+
+      "maximum": 60000,
+
+      "default": 30000
+
+    },
+
+    "include\_stats": {
+
+      "type": "boolean",
+
+      "default": false
+
+    }
+
+  }
+
+}
+</code></pre>
+<p>}</p>
+<p>}</p>
+<h3 id="contract-testing"><strong>Contract Testing</strong></h3>
+<p># tests/contract/test_api_contracts.py</p>
+<p>import json</p>
+<p>from jsonschema import validate</p>
+<p>import pytest</p>
+<p>class TestAPIContracts:</p>
+<pre><code>@pytest.fixture
+
+def schemas(self):
+
+    """Load all schemas"""
+
+    schemas \= {}
+
+    for schema\_file in Path("contracts/v1").rglob("\*.json"):
+
+        with open(schema\_file) as f:
+
+            schema \= json.load(f)
+
+            schemas\[schema\["$id"\]\] \= schema
+
+    return schemas
+
+
+
+def test\_prompt\_request\_valid(self, schemas):
+
+    """Test valid prompt request"""
+
+    request \= {
+
+        "prompt": "Describe the dungeon",
+
+        "context": {
+
+            "campaign\_id": "123e4567-e89b-12d3-a456-426614174000"
+
+        }
+
+    }
+
+
+
+    schema \= schemas\["https://api.dma.com/schemas/v1/prompt\_request.json"\]
+
+    validate(instance=request, schema=schema)  \# Should not raise
+
+
+
+def test\_prompt\_request\_invalid(self, schemas):
+
+    """Test invalid prompt request"""
+
+    request \= {
+
+        "prompt": "",  \# Empty prompt
+
+        "context": {}  \# Missing campaign\_id
+
+    }
+
+
+
+    schema \= schemas\["https://api.dma.com/schemas/v1/prompt\_request.json"\]
+
+    with pytest.raises(ValidationError):
+
+        validate(instance=request, schema=schema)
+</code></pre>
+<hr />
+<h2 id="implementation-checklist"><strong>Implementation Checklist</strong></h2>
+<h3 id="week-1-foundation"><strong>Week 1: Foundation</strong></h3>
+<ul>
+<li>[ ] Set up FastAPI with proper structure  </li>
+<li>[ ] Implement authentication middleware  </li>
+<li>[ ] Configure Redis Streams  </li>
+<li>[ ] Create base error handling  </li>
+<li>[ ] Set up Prometheus metrics  </li>
+<li>[ ] Define JSON schemas</li>
+</ul>
+<h3 id="week-2-core-apis"><strong>Week 2: Core APIs</strong></h3>
+<ul>
+<li>[ ] Implement <code>/v1/prompts</code> endpoints  </li>
+<li>[ ] Implement <code>/v1/entities</code> CRUD  </li>
+<li>[ ] Implement <code>/v1/search</code>  </li>
+<li>[ ] Create message bus publisher  </li>
+<li>[ ] Add request validation  </li>
+<li>[ ] Write initial tests</li>
+</ul>
+<h3 id="week-3-fast-lane"><strong>Week 3: Fast Lane</strong></h3>
+<ul>
+<li>[ ] Build rule cache loader  </li>
+<li>[ ] Implement THAC0 endpoint  </li>
+<li>[ ] Implement saving throws endpoint  </li>
+<li>[ ] Implement AC calculation  </li>
+<li>[ ] Add cache warming  </li>
+<li>[ ] Performance test \&lt; 500ms</li>
+</ul>
+<h3 id="week-4-integration"><strong>Week 4: Integration</strong></h3>
+<ul>
+<li>[ ] Connect Orchestrator to agents  </li>
+<li>[ ] Implement message consumers  </li>
+<li>[ ] Add circuit breakers  </li>
+<li>[ ] Set up OpenTelemetry  </li>
+<li>[ ] Contract testing suite  </li>
+<li>[ ] Load testing</li>
+</ul>
+<h3 id="week-5-hardening"><strong>Week 5: Hardening</strong></h3>
+<ul>
+<li>[ ] Security audit  </li>
+<li>[ ] Rate limiting  </li>
+<li>[ ] DLQ monitoring  </li>
+<li>[ ] Documentation  </li>
+<li>[ ] Docker packaging  </li>
+<li>[ ] Final testing</li>
+</ul>
+<hr />
+<h2 id="key-improvements-from-v1"><strong>Key Improvements from v1</strong></h2>
+<ol>
+<li><strong>Focused on MVC</strong>: Only 3 agents, single database  </li>
+<li><strong>Redis Streams</strong>: Replaced unreliable Pub/Sub  </li>
+<li><strong>Fast Lane API</strong>: Sub-500ms operations documented  </li>
+<li><strong>Proper HTTP codes</strong>: Not everything returns 200  </li>
+<li><strong>Machine-readable contracts</strong>: JSON Schema validation  </li>
+<li><strong>Required auth</strong>: Even for local development  </li>
+<li><strong>Clear observability</strong>: Specific labels and traces  </li>
+<li><strong>Version prefix</strong>: <code>/v1/</code> on all endpoints  </li>
+<li><strong>Pagination</strong>: Default limits on list operations  </li>
+<li><strong>5-week timeline</strong>: Realistic implementation plan</li>
+</ol>
+<p>This specification provides a complete, implementable API design that can ship in Q3 2025 while maintaining quality and performance standards.  </p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.sections", "search.highlight"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      
+    
+  </body>
+</html>
