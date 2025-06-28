@@ -1,3 +1,3 @@
-# Dungeon Master's Assistant (DMA) – MVC Edition
+# Dungeon Master's Assistant (DMA) – MVC Edition 
 
 
