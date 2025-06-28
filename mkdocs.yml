@@ -1,15 +1,16 @@
 site_name: Dungeon Master’s Assistant
 repo_url: https://github.com/Dungeon-Master-s-Assistant/dma
-docs_dir: docs
-theme:
-  name: material
-  features:
-    - navigation.sections
-markdown_extensions:
-  - admonition
-  - toc:
-      permalink: true
-plugins:
-  - search
-  - mermaid2
- 
+
+nav:
+  - Overview:
+      - DMA Plan v2: dma-plan-v2.md
+  - Architecture:
+      - Technical Design v2: dma-technical-design-v2.md
+      - Orchestrator Internal Design v1: orchestrator-internal-design-v1.md
+  - API:
+      - API Design Spec v2: dma-api-design-spec-v2.md
+      - Agent Contract Tests v2: dma-agent-contract-tests-v2.md
+  - Data:
+      - CKB Data Schema v2: ckb-data-schema-v2.md
+  - Diagrams:
+      - System Diagram: diagrams/dma-architecture.md
