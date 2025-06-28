@@ -1,0 +1,14 @@
+site_name: Dungeon Master’s Assistant
+repo_url: https://github.com/Dungeon-Master-s-Assistant/dma
+docs_dir: docs
+theme:
+  name: material
+  features:
+    - navigation.sections
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+plugins:
+  - search
+  - mermaid2
